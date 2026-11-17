@@ -1,0 +1,27 @@
+# Runs inside GitHub Codespaces (cloud). Nothing here requires Docker on the
+# developer's own PC.
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/python:1-3.12-bookworm
+    command: sleep infinity
+    volumes:
+      - ..:/workspaces/vgs-assistant:cached
+    environment:
+      DATABASE_URL: postgresql+psycopg://vgs:vgs@db:5432/vgs_dev
+      TEST_DATABASE_URL: postgresql+psycopg://vgs:vgs@db:5432/vgs_test
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vgs
+      POSTGRES_PASSWORD: vgs
+      POSTGRES_DB: vgs_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+
+volumes:
+  pgdata:
