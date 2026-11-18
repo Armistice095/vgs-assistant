@@ -415,3 +415,22 @@ Une tâche planifiée applique `retention_days_*` (durées à fixer avec le clie
 1. **Paiement fait et pièce refusée** : le schéma enregistre le paiement dans tous les cas et passe le dossier en `rework_needed`. Le remboursement est manuel (`refund_status`). À confirmer avec Vigo.
 2. Conservation comptable des montants après anonymisation : durée à confirmer.
 3. Nom d'origine des fichiers : conservé chiffré. Si Vigo n'en veut pas, la colonne disparaît.
+
+## 12. Écarts entre ce schéma et les migrations R1 à R3 (18/11/2026)
+
+Décidés par l'ingénieur dans son périmètre ; les migrations font foi.
+
+- **PostgreSQL 15 minimum** : `UNIQUE NULLS NOT DISTINCT` est utilisé pour l'unicité de `(procédure, variante)` et `(procédure, variante, position)`. Neon et l'image de test sont en 16.
+- Identifiants : `gen_random_uuid()` (UUID v4) par défaut en base, au lieu d'UUID v7 générés par l'application. Aucune dépendance au tri par temps n'existe pour l'instant ; à revoir si une pagination par identifiant devient nécessaire.
+- `inbound_events.payload` est **nullable** et `payload_purged_at` est ajouté (ADR 0005).
+- `staff_users` est créée dans R1 (et non R3) parce que `conversations` y fait référence.
+- `catalog_versions` : colonne `created_at` ajoutée et déclencheur qui interdit de repasser une version publiée ou archivée en brouillon.
+- `procedures.selector_question_fr` remplace `procedure_variants.selector_question_fr` (nullable, non semée : l'agent formule la question lui-même).
+- `procedure_variants.handoff_only` ajouté (cas « Béninois né à l'étranger »).
+- `fee_rules` : `official_fee_min_xof` et `official_fee_max_xof` ajoutés pour afficher la fourchette de la TVM tant que la table de puissance fiscale manque.
+- `requirement_items.status` (`draft` ou `confirmed`) ajouté : certains intitulés (« C'est moi », FID) sont à confirmer.
+- `messages` : contrainte supplémentaire, un message sortant ne peut pas avoir `sender = 'client'`.
+- `audit_log` et `consent_events` : le déclencheur d'immuabilité couvre aussi `TRUNCATE`.
+- Sans clé étrangère pour l'instant (tables des étapes suivantes) : `conversations.current_dossier_id`, `alerts.dossier_id`, `messages.document_id`.
+- `erasure_requests` n'est pas créée : `contacts.erasure_requested_at` et `anonymized_at` suffisent tant qu'il n'y a pas de tableau de bord.
+- Tables des étapes 2 à 5 (`media_fetch_jobs`, `documents`, `dossiers`…) : créées avec leur étape, comme décidé (migrations groupées par étape).

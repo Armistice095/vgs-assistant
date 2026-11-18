@@ -7,12 +7,15 @@ Date : 2026-11-17
 
 Le chef technique a validé : passerelle Baileys sur Oracle Always Free, domaine chez Cloudflare avec tunnel nommé, et, pour le test réel de l'étape 2, **cœur et passerelle sur la même machine** (hors Docker local). La base de développement reste Neon. Tout état important doit rester hors de la machine. Il faut un plan B et une reconstruction rapide.
 
-Points de vigilance relevés dans des sources tierces (à confirmer sur la documentation Oracle à l'ouverture du compte) :
-- l'offre Arm Always Free aurait été réduite à 2 cœurs et 12 Go en juin 2026 ;
-- une instance très peu utilisée (CPU sous 20 % sur 7 jours) peut être **récupérée** par Oracle ;
-- le manque de capacité (« out of host capacity ») est fréquent, et une carte bancaire est exigée.
+**Vérifié dans la documentation officielle d'Oracle (18/11/2026)** :
+- l'offre Arm Always Free est de **2 OCPU et 12 Go** de mémoire au total (une seule instance, ou deux instances de 1 OCPU) ;
+- une instance Always Free est jugée **inactive**, et peut être récupérée, si pendant 7 jours : le CPU au 95e centile reste sous 20 %, le réseau sous 20 % et, pour les formats A1, la mémoire sous 20 % (les trois conditions réunies) ;
+- la page commerciale indique qu'un compte inactif 30 jours ou plus peut être considéré comme abandonné et suspendu ou supprimé ;
+- OCI Vault : voir ADR 0006.
 
-La passerelle est presque inactive la nuit : le risque de récupération est réel pour elle. Il est couvert par la reconstruction rapide plutôt que par un artifice de charge.
+Reste de source tierce, à confirmer à l'ouverture du compte : le manque de capacité (« out of host capacity ») fréquent dans certaines régions, et la carte bancaire exigée.
+
+La passerelle est presque inactive la nuit : le risque de récupération est réel pour elle (un petit service Node et un petit service Python resteront sous 20 % de mémoire sur 12 Go). Il est couvert par la reconstruction rapide plutôt que par un artifice de charge. À l'étape 2 : un contrôle de santé externe et une alerte quand la machine ne répond plus.
 
 ## Décision proposée
 

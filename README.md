@@ -8,7 +8,9 @@ Le code et les noms sont en anglais, la documentation en français.
 1. Ouvrir le dépôt dans GitHub Codespaces. Le devcontainer installe Python, Node, un
    Postgres local de test et les dépendances (`.devcontainer/post-create.sh`).
 2. Compléter `.env` (copié depuis `.env.example`). Aucun secret n'entre dans le dépôt.
-3. Lancer `make check` : lint, types stricts et tests.
+3. Lancer `make check` : lint, types stricts et tests. Les tests d'intégration utilisent une vraie
+   base (`TEST_DATABASE_URL`, déjà fournie par le devcontainer) ; sans elle ils sont ignorés.
+4. Lire `docs/architecture.md` puis `docs/decisions/README.md` (journal des décisions).
 
 Commandes utiles : `make help`.
 
