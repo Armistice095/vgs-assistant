@@ -1,0 +1,11 @@
+DROP TABLE consent_events;
+DROP TABLE message_templates;
+DROP TABLE messages;
+DROP TABLE inbound_events;
+DROP TABLE conversations;
+DROP TABLE contacts;
+DROP TABLE channel_accounts;
+DROP TABLE staff_users;
+DROP FUNCTION deny_modification();
+DROP FUNCTION set_updated_at();
+DROP EXTENSION IF EXISTS btree_gist;

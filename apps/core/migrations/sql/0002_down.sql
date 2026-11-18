@@ -1,0 +1,9 @@
+DROP TABLE settings;
+DROP TABLE requirement_items;
+DROP TABLE requirement_groups;
+DROP TABLE fee_parameter_bands;
+DROP TABLE fee_rules;
+DROP TABLE procedure_variants;
+DROP TABLE procedures;
+DROP TABLE catalog_versions;
+DROP FUNCTION catalog_version_status_guard();
